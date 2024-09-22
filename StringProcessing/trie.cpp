@@ -64,3 +64,85 @@ bool delete_key(Trie* root, string word) {
 //insert_key(root, str)
 //search_key(root, str)
 //delete_key(root, str)
+
+
+
+// -----------------------------
+
+
+class Trie{
+    private:
+        int node=0,sz=0;
+        const int MaxAlph=26;//change here
+        vector<vector<int>> dp;vector<int> freq,PrefixFreq,unocupied;
+        int f(char c){
+            return c-'a';  //change here          
+        }
+    public:
+        Trie(){
+            dp.resize(1,vector<int>(MaxAlph));
+            freq.resize(1);
+            PrefixFreq.resize(1);
+        }
+        int size(){
+            return sz;
+        }
+        void insert(string s){
+            int n=s.length(), next=0;sz++;
+            for(int i=0;i<n;i++){
+                if(!dp[next][f(s[i])]){
+                    if(unocupied.empty()){
+                        dp[next][f(s[i])]=++node;
+                        dp.push_back(vector<int>(MaxAlph));
+                        freq.push_back(0);
+                        PrefixFreq.push_back(0);
+                    }
+                    else{
+                        dp[next][f(s[i])]=unocupied.back();
+                        unocupied.pop_back();
+                    }
+                }
+                next = dp[next][f(s[i])];
+                PrefixFreq[next]++;
+            }
+            freq[next]++;
+        }
+        int count(string s){
+            int next=0, n=s.length();
+            for(int i=0;i<n;i++){
+                if(!dp[next][f(s[i])])return 0;
+                next = dp[next][f(s[i])];
+            }
+            return freq[next];
+        }
+        int countPrifix(string s){
+            int next=0, n=s.length();
+            for(int i=0;i<n;i++){
+                if(!dp[next][f(s[i])])return 0;
+                next = dp[next][f(s[i])];
+            }
+            return PrefixFreq[next];
+        }
+        void delet(string s,int cnt=1){
+            int next=0, n=s.length();
+            for(int i=0;i<n;i++){
+                if(!dp[next][f(s[i])])return;
+                next = dp[next][f(s[i])];
+            }
+            if(cnt>freq[next])cnt=freq[next];
+            freq[next]-=cnt;sz-=cnt;
+            next=0;
+            for(int i=0;i<n;i++){
+                int tmp=next;
+                next=dp[next][f(s[i])];
+                PrefixFreq[next]-=cnt;
+                if(PrefixFreq[next]==0){
+                    dp[tmp][f(s[i])]=0;
+                    unocupied.push_back(next);
+                }
+            }
+        }
+        void merge(Trie &t){
+                
+        }
+};

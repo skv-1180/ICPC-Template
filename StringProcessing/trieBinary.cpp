@@ -66,42 +66,76 @@ Trie* merge(Trie* a, Trie* b){
 
 
 
-/* 
-const int maxp = 20;
-struct Trie {
- vector<array<int,2>> t;
- Trie() {
-     t.assign(1, {-1, -1});
- }
- int findMaxXor(int x) {
-     int ret = 0;
-     int d = 0;
-     for (int i = maxp-1; i >= 0; i--) {
-         ret <<= 1ll;
-         int b = x>>i & 1;
-         if (t[d][b ^ 1] == -1) {
-            d = t[d][b];
-         }
-         else {
-            d = t[d][b ^ 1];
-            ret++;
-         }
-     }
-     return ret;
- }
- void insert(int x) {
-     int d = 0;
-     for (int i = maxp-1; i >= 0; i--) {
-         int b = x>>i & 1;
-         if (t[d][b] == -1) {
-             t[d][b] = t.size();
-             t.push_back({-1, -1});
-         }
-         d = t[d][b];
-     }
- }
-};
-// Trie root;
-//root.insert(x); 
+// ------------------------------------------
 
-*/
+class TrieInt{
+    private:
+        int node=0,sz=0;int len=31;//!change here
+        vector<vector<int>> dp;
+        vector<int> PrefixFreq,unocupied;
+        int bit(int x,int i){
+            return (x>>i)&1;
+        }
+    public:
+        TrieInt(){
+            dp.resize(1,vector<int>(2));
+            PrefixFreq.resize(1);
+        }
+        int size(){
+            return sz;
+        }
+        void insert(int x){
+            int next=0;sz++;
+            for(int i=len-1;i>=0;i--){
+                if(!dp[next][bit(x,i)]){
+                    if(unocupied.empty()){
+                        dp[next][bit(x,i)]=++node;
+                        dp.push_back(vector<int>(2));
+                        PrefixFreq.push_back(0);
+                    }
+                    else{
+                        dp[next][bit(x,i)]=unocupied.back();
+                        unocupied.pop_back();
+                    }
+                }
+                next = dp[next][bit(x,i)];
+                PrefixFreq[next]++;
+            }
+        }
+        void delet(int x,int cnt=1){
+            int next=0;
+            for(int i=len-1;i>=0;i--){
+                if(!dp[next][bit(x,i)])return;
+                next = dp[next][bit(x,i)];
+            }
+            if(cnt>PrefixFreq[next])cnt=PrefixFreq[next];
+            sz-=cnt;next=0;
+            for(int i=len-1;i>=0;i--){
+                int tmp=next;
+                next=dp[next][bit(x,i)];
+                PrefixFreq[next]-=cnt;
+                if(PrefixFreq[next]==0){
+                    dp[tmp][bit(x,i)]=0;
+                    unocupied.push_back(next);
+                }
+            }
+        }
+        int maxXnor(int x){
+            int next=0;int res=0;
+            for(int i=len-1;i>=0;i--){
+                if(dp[next][bit(x,i)]){
+                    next=dp[next][bit(x,i)];
+                    res|=(bit(x,i)<<i);
+                }
+                else {
+                    next=dp[next][!bit(x,i)];
+                    res|=((!bit(x,i))<<i);
+                }
+            }
+            return res;
+        }
+        int maxXor(int x){
+            x=x^((1llu<<len)-1);
+            return maxXnor(x);
+        }
+};
