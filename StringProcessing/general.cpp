@@ -86,8 +86,6 @@ vector<int> z_function(string s) {
 }
 
 
-
-
 vector<int>p,c,cnt,pn,cn;
 vector<int> sort_cyclic_shifts(string const& s) {
     const int alphabet = 256;

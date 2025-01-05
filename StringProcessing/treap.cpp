@@ -1,3 +1,11 @@
+/*
+For lighter implementation, see treap code inside range query
+*/
+
+
+
+
+
 // The glory is for GOD
 
 #include <bits/stdc++.h>
