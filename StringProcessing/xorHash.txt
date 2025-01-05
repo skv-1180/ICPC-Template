@@ -1,0 +1,5 @@
+For xor hash of {a,b,c}
+((a+k)^H)%M xor ((b+k)^H)%M xor ((c+k)^H)%M xor ...
+-> don't take overall modulo 
+
+-> can be used to check whether every no occurs in pairs

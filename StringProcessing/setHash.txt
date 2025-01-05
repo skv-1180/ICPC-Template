@@ -1,0 +1,7 @@
+given a multiset S = {x,y,z,..}
+Hash(S) = ((x+k)^h + (y+k)^h + (z+k)^h + ...)%M
+k - random no -> 2324424
+h - no b/w 50 - 100 
+M - unusual prime no
+
+-> use double hash(M1,M2) if necessay
